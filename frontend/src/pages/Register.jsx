@@ -117,10 +117,6 @@ export default function Register() {
               'linear-gradient(160deg, #1C3328 0%, #2C4F3A 40%, #3A6349 70%, #4A7C5E 100%)',
           }}
         >
-          <div className="absolute -top-15 -right-15 w-72 h-72 rounded-full bg-white/5" />
-          <div className="absolute -bottom-12.5 -left-12.5 w-56 h-56 rounded-full bg-white/5" />
-          <div className="absolute top-1/3 left-8 w-32 h-32 rounded-full bg-white/5" />
-
           <div
             className="relative z-10 rounded-2xl p-8 text-center text-white max-w-xs"
             style={{
@@ -130,7 +126,6 @@ export default function Register() {
               border: '1px solid rgba(255,255,255,0.2)',
             }}
           >
-            <div className="w-8 h-8 rounded-full border-2 border-white/50 border-t-transparent animate-spin mx-auto mb-6" />
             <h2 className="text-xl font-semibold leading-snug">
               Join a smarter way to manage patient care
             </h2>
