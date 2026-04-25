@@ -3,8 +3,8 @@ import { useAuth } from '../context/AuthContext';
 
 const ROLE_COLORS = {
   admin: 'bg-purple-100 text-purple-800',
-  staff: 'bg-blue-100 text-blue-800',
-  patient: 'bg-green-100 text-green-800',
+  staff: 'bg-sage-100 text-sage-800',
+  patient: 'bg-sage-50 text-sage-700',
 };
 
 export default function Navbar() {
@@ -22,32 +22,33 @@ export default function Navbar() {
   const linkClass = (path) =>
     `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
       pathname === path
-        ? 'bg-blue-700 text-white'
-        : 'text-blue-100 hover:bg-blue-700 hover:text-white'
+        ? 'bg-sage-700 text-white'
+        : 'text-white/70 hover:bg-white/10 hover:text-white'
     }`;
 
   return (
-    <nav className="bg-blue-600 shadow-lg">
+    <nav className="bg-charcoal shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-white font-bold text-xl tracking-tight">
-              QueueCare
+            <Link to="/" className="font-bold text-xl tracking-tight">
+              <span className="text-white">Queue</span>
+              <span className="text-sage-600">Care</span>
             </Link>
             <div className="flex gap-1">
               <Link to="/" className={linkClass('/')}>Dashboard</Link>
               <Link to="/appointments" className={linkClass('/appointments')}>Appointments</Link>
-              <Link to="/queue" className={linkClass('/queue')}>Today's Queue</Link>
+              <Link to="/queue" className={linkClass('/queue')}>Today&apos;s Queue</Link>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-blue-100 text-sm">{user.name}</span>
+            <span className="text-white/70 text-sm">{user.name}</span>
             <span className={`text-xs px-2 py-1 rounded-full font-medium ${ROLE_COLORS[user.role]}`}>
               {user.role}
             </span>
             <button
               onClick={handleLogout}
-              className="ml-2 px-3 py-1.5 bg-blue-800 hover:bg-blue-900 text-white text-sm rounded-md transition-colors"
+              className="ml-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-sm rounded-md transition-colors cursor-pointer"
             >
               Logout
             </button>

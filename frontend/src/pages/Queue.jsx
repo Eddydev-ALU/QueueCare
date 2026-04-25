@@ -4,7 +4,7 @@ import api from '../api';
 
 const STATUS_BADGE = {
   pending: 'bg-amber-100 text-amber-800',
-  served: 'bg-green-100 text-green-800',
+  served: 'bg-sage-100 text-sage-800',
   cancelled: 'bg-red-100 text-red-800',
 };
 
@@ -47,22 +47,22 @@ export default function Queue() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Today's Queue</h1>
+        <h1 className="text-2xl font-bold text-charcoal">Today&apos;s Queue</h1>
         <p className="text-gray-500 mt-0.5">{today}</p>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="bg-blue-50 rounded-xl p-4 text-center">
+        <div className="bg-sage-50 rounded-xl p-4 text-center">
           <p className="text-sm text-gray-500">Total</p>
-          <p className="text-3xl font-bold text-blue-600 mt-1">{queue.length}</p>
+          <p className="text-3xl font-bold text-sage-600 mt-1">{queue.length}</p>
         </div>
         <div className="bg-amber-50 rounded-xl p-4 text-center">
           <p className="text-sm text-gray-500">Waiting</p>
           <p className="text-3xl font-bold text-amber-600 mt-1">{pending}</p>
         </div>
-        <div className="bg-green-50 rounded-xl p-4 text-center">
+        <div className="bg-sage-100 rounded-xl p-4 text-center">
           <p className="text-sm text-gray-500">Served</p>
-          <p className="text-3xl font-bold text-green-600 mt-1">{served}</p>
+          <p className="text-3xl font-bold text-sage-700 mt-1">{served}</p>
         </div>
       </div>
 
@@ -76,11 +76,11 @@ export default function Queue() {
             <div
               key={a.id}
               className={`bg-white rounded-xl border p-4 flex items-center gap-4 transition-all ${
-                a.status === 'served' ? 'border-green-200 opacity-75' : 'border-gray-100 shadow-sm'
+                a.status === 'served' ? 'border-sage-200 opacity-75' : 'border-gray-100 shadow-sm'
               }`}
             >
               <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-lg font-bold ${
-                a.status === 'served' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-700'
+                a.status === 'served' ? 'bg-sage-100 text-sage-600' : 'bg-sage-50 text-sage-700'
               }`}>
                 {a.queue_number}
               </div>
@@ -100,7 +100,7 @@ export default function Queue() {
                 <button
                   onClick={() => handleServe(a.id)}
                   disabled={serving === a.id}
-                  className="flex-shrink-0 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                  className="flex-shrink-0 bg-sage-600 hover:bg-sage-700 disabled:opacity-60 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer"
                 >
                   {serving === a.id ? 'Marking…' : 'Mark Served'}
                 </button>

@@ -23,79 +23,123 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-600">QueueCare</h1>
-          <p className="text-gray-500 mt-1">Create your account</p>
+    <div
+      className="min-h-screen flex items-center justify-center p-6"
+      style={{
+        background:
+          'radial-gradient(ellipse at 15% 85%, rgba(74,124,94,0.55) 0%, transparent 55%), ' +
+          'radial-gradient(ellipse at 85% 15%, rgba(28,43,43,0.45) 0%, transparent 45%), ' +
+          'radial-gradient(ellipse at 75% 80%, rgba(92,144,112,0.35) 0%, transparent 50%), ' +
+          'linear-gradient(145deg, #c8dfd0 0%, #a0c4b0 30%, #7aaf94 65%, #4a7c5e 100%)',
+      }}
+    >
+      <div className="w-full max-w-225 rounded-3xl shadow-2xl overflow-hidden flex">
+
+        {/* LEFT — Form Panel */}
+        <div className="flex-1 bg-white flex flex-col px-12 py-10">
+          <div className="text-xl font-bold tracking-tight text-charcoal">
+            Queue<span className="text-sage-600">Care</span>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center mt-4">
+            <h1 className="text-4xl font-bold text-charcoal">Join Us!</h1>
+            <p className="text-gray-500 text-sm mt-3 leading-relaxed max-w-xs">
+              Create your account to manage appointments and patient care.
+            </p>
+
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+              <input
+                type="text"
+                required
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full bg-gray-100 rounded-xl px-4 py-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sage-600 border-0"
+                placeholder="Full name"
+              />
+              <input
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full bg-gray-100 rounded-xl px-4 py-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sage-600 border-0"
+                placeholder="Your email address"
+              />
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                className="w-full bg-gray-100 rounded-xl px-4 py-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sage-600 border-0"
+                placeholder="Password (min. 6 characters)"
+              />
+              <select
+                value={form.role}
+                onChange={(e) => setForm({ ...form, role: e.target.value })}
+                className="w-full bg-gray-100 rounded-xl px-4 py-4 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-sage-600 border-0"
+              >
+                <option value="patient">Patient</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+              </select>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-charcoal hover:bg-sage-800 disabled:opacity-60 text-white font-medium py-4 rounded-full mt-2 transition-colors cursor-pointer"
+              >
+                {loading ? 'Creating account…' : 'Create Account'}
+              </button>
+            </form>
+          </div>
+
+          <p className="text-center text-sm text-gray-400 mt-6">
+            Already have an account?{' '}
+            <Link to="/login" className="text-sage-600 font-medium hover:underline">
+              Sign in
+            </Link>
+          </p>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
+        {/* RIGHT — Botanical Panel */}
+        <div
+          className="hidden md:flex flex-1 relative items-center justify-center p-8"
+          style={{
+            background:
+              'radial-gradient(ellipse at 20% 80%, rgba(28,51,40,0.9) 0%, transparent 60%), ' +
+              'radial-gradient(ellipse at 80% 20%, rgba(74,124,94,0.7) 0%, transparent 50%), ' +
+              'radial-gradient(ellipse at 50% 50%, rgba(44,79,58,0.5) 0%, transparent 70%), ' +
+              'linear-gradient(160deg, #1C3328 0%, #2C4F3A 40%, #3A6349 70%, #4A7C5E 100%)',
+          }}
+        >
+          <div className="absolute -top-15 -right-15 w-72 h-72 rounded-full bg-white/5" />
+          <div className="absolute -bottom-12.5 -left-12.5 w-56 h-56 rounded-full bg-white/5" />
+          <div className="absolute top-1/3 left-8 w-32 h-32 rounded-full bg-white/5" />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-            <input
-              type="text"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Jane Smith"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Min. 6 characters"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-            <select
-              value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            >
-              <option value="patient">Patient</option>
-              <option value="staff">Staff</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2.5 rounded-lg transition-colors"
+          <div
+            className="relative z-10 rounded-2xl p-8 text-center text-white max-w-xs"
+            style={{
+              background: 'rgba(255,255,255,0.12)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255,255,255,0.2)',
+            }}
           >
-            {loading ? 'Creating account…' : 'Create Account'}
-          </button>
-        </form>
+            <div className="w-8 h-8 rounded-full border-2 border-white/50 border-t-transparent animate-spin mx-auto mb-6" />
+            <h2 className="text-xl font-semibold leading-snug">
+              Join a smarter way to manage patient care
+            </h2>
+            <p className="mt-3 text-sm text-white/75 leading-relaxed">
+              Streamline your clinic&apos;s appointment flow and deliver better outcomes, every day.
+            </p>
+          </div>
+        </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline font-medium">Sign in</Link>
-        </p>
       </div>
     </div>
   );

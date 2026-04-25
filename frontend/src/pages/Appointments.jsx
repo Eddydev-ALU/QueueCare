@@ -5,7 +5,7 @@ import api from '../api';
 
 const STATUS_BADGE = {
   pending: 'bg-amber-100 text-amber-800',
-  served: 'bg-green-100 text-green-800',
+  served: 'bg-sage-100 text-sage-800',
   cancelled: 'bg-red-100 text-red-800',
 };
 
@@ -40,12 +40,12 @@ export default function Appointments() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-charcoal">
           {user.role === 'patient' ? 'My Appointments' : 'All Appointments'}
         </h1>
         <Link
           to="/appointments/new"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="bg-charcoal hover:bg-sage-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           + New Appointment
         </Link>
@@ -56,7 +56,7 @@ export default function Appointments() {
       {appointments.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
           <p className="text-gray-400">No appointments found.</p>
-          <Link to="/appointments/new" className="mt-3 inline-block text-blue-600 hover:underline text-sm">
+          <Link to="/appointments/new" className="mt-3 inline-block text-sage-600 hover:underline text-sm">
             Book your first appointment
           </Link>
         </div>
@@ -95,13 +95,13 @@ export default function Appointments() {
                         <>
                           <button
                             onClick={() => navigate(`/appointments/${a.id}/edit`)}
-                            className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                            className="text-sage-600 hover:text-sage-800 text-xs font-medium cursor-pointer"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(a.id)}
-                            className="text-red-500 hover:text-red-700 text-xs font-medium"
+                            className="text-red-500 hover:text-red-700 text-xs font-medium cursor-pointer"
                           >
                             Cancel
                           </button>

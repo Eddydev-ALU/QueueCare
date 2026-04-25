@@ -30,7 +30,7 @@ export default function CreateAppointment() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 mb-6">
         <Link to="/appointments" className="text-gray-400 hover:text-gray-600 text-sm">← Back</Link>
-        <h1 className="text-2xl font-bold text-gray-900">Book Appointment</h1>
+        <h1 className="text-2xl font-bold text-charcoal">Book Appointment</h1>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -44,7 +44,7 @@ export default function CreateAppointment() {
               required
               value={form.doctor}
               onChange={(e) => setForm({ ...form, doctor: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sage-600 focus:border-transparent"
               placeholder="Dr. Sarah Johnson"
             />
           </div>
@@ -57,7 +57,7 @@ export default function CreateAppointment() {
               value={form.date}
               min={new Date().toISOString().split('T')[0]}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sage-600 focus:border-transparent"
             />
           </div>
 
@@ -68,7 +68,7 @@ export default function CreateAppointment() {
               rows={3}
               value={form.reason}
               onChange={(e) => setForm({ ...form, reason: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sage-600 focus:border-transparent resize-none"
               placeholder="Describe the reason for your visit…"
             />
           </div>
@@ -77,13 +77,13 @@ export default function CreateAppointment() {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2.5 rounded-lg transition-colors"
+              className="flex-1 bg-charcoal hover:bg-sage-800 disabled:opacity-60 text-white font-medium py-2.5 rounded-lg transition-colors cursor-pointer"
             >
               {loading ? 'Booking…' : 'Book Appointment'}
             </button>
             <Link
               to="/appointments"
-              className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors text-center"
+              className="px-6 py-2.5 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors text-center"
             >
               Cancel
             </Link>
