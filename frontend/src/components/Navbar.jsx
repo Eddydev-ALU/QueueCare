@@ -20,28 +20,37 @@ export default function Navbar() {
   };
 
   const linkClass = (path) =>
-    `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+    `px-3 text-sm font-medium transition-colors h-full flex items-center border-b-2 ${
       pathname === path
-        ? 'bg-sage-700 text-white'
-        : 'text-white/70 hover:bg-white/10 hover:text-white'
+        ? 'text-white border-white'
+        : 'text-white/60 border-transparent hover:text-white'
     }`;
 
   return (
     <nav className="bg-charcoal shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-6">
-            <Link to="/" className="font-bold text-xl tracking-tight">
-              <span className="text-white">Queue</span>
-              <span className="text-sage-600">Care</span>
-            </Link>
-            <div className="flex gap-1">
-              <Link to="/" className={linkClass('/')}>Dashboard</Link>
-              <Link to="/appointments" className={linkClass('/appointments')}>Appointments</Link>
-              <Link to="/queue" className={linkClass('/queue')}>Today&apos;s Queue</Link>
-            </div>
+        <div className="flex items-center h-16 relative">
+          {/* Logo — left */}
+          <Link to="/" className="font-bold text-xl tracking-tight shrink-0">
+            <span className="text-white">Queue</span>
+            <span className="text-sage-600">Care</span>
+          </Link>
+
+          {/* Nav links — absolutely centered */}
+          <div className="absolute left-1/2 -translate-x-1/2 flex h-full">
+            <Link to="/" className={linkClass('/')}>Dashboard</Link>
+            <Link to="/appointments" className={linkClass('/appointments')}>Appointments</Link>
+            <Link to="/queue" className={linkClass('/queue')}>Today&apos;s Queue</Link>
+            {(user.role === 'staff' || user.role === 'admin') && (
+              <Link to="/queue/archive" className={linkClass('/queue/archive')}>Archive</Link>
+            )}
+            {user.role === 'admin' && (
+              <Link to="/doctors" className={linkClass('/doctors')}>Doctors</Link>
+            )}
           </div>
-          <div className="flex items-center gap-3">
+
+          {/* User info — right */}
+          <div className="ml-auto flex items-center gap-3">
             <span className="text-white/70 text-sm">{user.name}</span>
             <span className={`text-xs px-2 py-1 rounded-full font-medium ${ROLE_COLORS[user.role]}`}>
               {user.role}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
 
@@ -9,8 +9,16 @@ export default function CreateAppointment() {
     date: new Date().toISOString().split('T')[0],
     reason: '',
   });
+  const [doctors, setDoctors] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    api.get('/doctors').then((res) => {
+      setDoctors(res.data);
+      if (res.data.length > 0) setForm((f) => ({ ...f, doctor: res.data[0].name }));
+    }).catch(() => {});
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,14 +47,24 @@ export default function CreateAppointment() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
-            <input
-              type="text"
-              required
-              value={form.doctor}
-              onChange={(e) => setForm({ ...form, doctor: e.target.value })}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sage-600 focus:border-transparent"
-              placeholder="Dr. Sarah Johnson"
-            />
+            {doctors.length === 0 ? (
+              <p className="text-sm text-amber-600 bg-amber-50 rounded-lg px-3 py-2.5">
+                No doctors available yet. Ask an admin to add doctors first.
+              </p>
+            ) : (
+              <select
+                required
+                value={form.doctor}
+                onChange={(e) => setForm({ ...form, doctor: e.target.value })}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sage-600 focus:border-transparent bg-white"
+              >
+                {doctors.map((d) => (
+                  <option key={d.id} value={d.name}>
+                    {d.name}{d.specialty ? ` — ${d.specialty}` : ''}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div>
@@ -76,7 +94,7 @@ export default function CreateAppointment() {
           <div className="flex gap-3 pt-2">
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || doctors.length === 0}
               className="flex-1 bg-charcoal hover:bg-sage-800 disabled:opacity-60 text-white font-medium py-2.5 rounded-lg transition-colors cursor-pointer"
             >
               {loading ? 'Booking…' : 'Book Appointment'}

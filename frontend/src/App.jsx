@@ -9,6 +9,8 @@ import Appointments from './pages/Appointments';
 import CreateAppointment from './pages/CreateAppointment';
 import EditAppointment from './pages/EditAppointment';
 import Queue from './pages/Queue';
+import QueueArchive from './pages/QueueArchive';
+import Doctors from './pages/Doctors';
 
 export default function App() {
   return (
@@ -24,6 +26,12 @@ export default function App() {
             <Route path="/appointments/new" element={<ProtectedRoute><CreateAppointment /></ProtectedRoute>} />
             <Route path="/appointments/:id/edit" element={<ProtectedRoute><EditAppointment /></ProtectedRoute>} />
             <Route path="/queue" element={<ProtectedRoute><Queue /></ProtectedRoute>} />
+            <Route path="/queue/archive" element={
+              <ProtectedRoute roles={['staff', 'admin']}><QueueArchive /></ProtectedRoute>
+            } />
+            <Route path="/doctors" element={
+              <ProtectedRoute roles={['admin']}><Doctors /></ProtectedRoute>
+            } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
