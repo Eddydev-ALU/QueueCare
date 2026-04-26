@@ -96,7 +96,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Backend running on port 5001. No existing account with the test email. |
 | **Test Execution Steps** | 1. Send `POST /api/auth/register` with name, email, password, and role. 2. Send `POST /api/auth/login` with the same email and password. 3. Inspect the token and user fields in the response. |
 | **Expected Result** | 201 on register. 200 on login. Token is a three-segment JWT string. User object contains id, name, email, and role. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 201 on register. 200 on login. Token was a three-segment JWT string. User object contained id, name, email, and role. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -113,7 +113,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Patient logged in. Valid doctor exists in the database. |
 | **Test Execution Steps** | 1. Send `POST /api/appointments` with a valid doctor name, future date, and reason using a patient Bearer token. 2. Inspect the response body. |
 | **Expected Result** | 201 Created. `queue_number` is a positive integer. `status` is pending. Doctor and date match the request. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 201 Created. Response included a positive integer queue_number, status of pending, and matching doctor and date fields. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -130,7 +130,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Two patient accounts registered and logged in. Each has at least one appointment. |
 | **Test Execution Steps** | 1. Send `GET /api/appointments` with patient1 Bearer token. 2. Check every record in the response array. |
 | **Expected Result** | 200 OK. All records have `patient_id` matching patient1. Patient2's appointment ID is not in the response. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 200 OK. All records had patient_id matching patient1. Patient2's appointment was not present in the response. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -147,7 +147,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Staff account logged in. At least two patients each have one appointment. |
 | **Test Execution Steps** | 1. Send `GET /api/appointments` with staff Bearer token. 2. Check the response array for appointments from multiple patients. |
 | **Expected Result** | 200 OK. Response includes appointment IDs belonging to both patient1 and patient2. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 200 OK. Response included appointment IDs from both patient1 and patient2. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -164,7 +164,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Patient logged in. Appointment exists with a known ID. |
 | **Test Execution Steps** | 1. Send `GET /api/appointments/:id` with the patient's Bearer token. 2. Inspect all fields in the response. |
 | **Expected Result** | 200 OK. Response includes id, patient_id, doctor, date, reason, queue_number, status, patient_name, and patient_email. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 200 OK. All required fields were present: id, patient_id, doctor, date, reason, queue_number, status, patient_name, and patient_email. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -181,7 +181,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Staff account logged in. A pending appointment exists with a known ID. |
 | **Test Execution Steps** | 1. Send `PATCH /api/queue/:id/serve` with staff Bearer token. 2. Send `GET /api/appointments/:id` with staff token. 3. Check the status field. |
 | **Expected Result** | PATCH returns 200 with success message. Subsequent GET returns the appointment with `status = 'served'`. |
-| **Actual Result** | As expected. |
+| **Actual Result** | PATCH returned 200 with a success message. Follow-up GET returned the appointment with status set to served. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -198,7 +198,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | User registered. Backend running. |
 | **Test Execution Steps** | 1. Send `POST /api/auth/login` with the correct email and a wrong password. 2. Check the HTTP status and response body. |
 | **Expected Result** | 401 Unauthorized. Response body contains an `error` field. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 401 Unauthorized. Response body contained an error field with an invalid credentials message. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -215,7 +215,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Backend running. |
 | **Test Execution Steps** | 1. Send `GET /api/appointments` with no Authorization header. 2. Check the HTTP status and response body. |
 | **Expected Result** | 401 Unauthorized. Response body contains an `error` field. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 401 Unauthorized. Response body contained an error field indicating the request was missing an authorization token. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -232,7 +232,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Two patient accounts registered and logged in. Patient2 has an appointment with a known ID. |
 | **Test Execution Steps** | 1. Send `GET /api/appointments/:patient2_appointment_id` using patient1's Bearer token. 2. Check the HTTP status. |
 | **Expected Result** | 403 Forbidden. Response body contains an `error` field. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 403 Forbidden. Response body contained an error field indicating access to another patient's record was denied. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -249,7 +249,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Patient account logged in. An appointment exists with a known ID. |
 | **Test Execution Steps** | 1. Send `PATCH /api/queue/:id/serve` using a patient Bearer token. 2. Check the HTTP status. |
 | **Expected Result** | 403 Forbidden. Response body contains an `error` field. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 403 Forbidden. Response body contained an error field indicating the patient role does not have permission to use the serve endpoint. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -266,7 +266,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Staff account logged in. Backend running. |
 | **Test Execution Steps** | 1. Send `GET /api/appointments/99999999` with staff Bearer token. 2. Check the HTTP status and response body. |
 | **Expected Result** | 404 Not Found. Response body contains an `error` field. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 404 Not Found. Response body contained an error field stating the appointment was not found. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -284,7 +284,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Test Execution Steps** | 1. Compute yesterday's date in YYYY-MM-DD format. 2. Send `POST /api/appointments` with the past date, a valid doctor, and a reason. 3. Check the HTTP status. |
 | **Expected Result** | 400 Bad Request. Error message indicates past dates are not allowed. |
 | **Actual Result (before fix)** | 201 Created. Appointment was stored with a past date. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 | **Bug ID** | BUG-002 |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
 
@@ -301,7 +301,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Test Execution Steps** | 1. Send `POST /api/appointments` with the same future date already booked by the patient. 2. Check the HTTP status of the second request. |
 | **Expected Result** | 409 Conflict. Error message states the patient already has an appointment on that date. |
 | **Actual Result (before fix)** | 201 Created. Duplicate appointment was booked without any error. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 | **Bug ID** | BUG-003 |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
 
@@ -318,7 +318,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Test Execution Steps** | 1. Send `POST /api/appointments` with `"date": "not-a-date"`, a valid doctor, and a reason. 2. Check the HTTP status. |
 | **Expected Result** | 400 Bad Request. Error message describes the invalid date format. |
 | **Actual Result (before fix)** | 201 Created. The invalid string was stored in the database as the appointment date. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 | **Bug ID** | BUG-004 |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
 
@@ -335,7 +335,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Test Execution Steps** | 1. Send `DELETE /api/appointments/:id` a second time on an already-cancelled appointment. 2. Check the HTTP status and error message. |
 | **Expected Result** | 400 Bad Request. Error message states the appointment is already cancelled. |
 | **Actual Result (before fix)** | 404 Not Found. The first DELETE had permanently removed the row so the record no longer existed. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 | **Bug ID** | BUG-001 |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
 
@@ -351,7 +351,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Staff logged in. Appointment already has `status = 'served'`. |
 | **Test Execution Steps** | 1. Send `PATCH /api/queue/:id/serve` on an appointment that was already served. 2. Check the HTTP status and response. |
 | **Expected Result** | 400 Bad Request. Error message states the patient is already marked as served. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 400 Bad Request. Response body contained an error message stating the patient was already marked as served. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -368,7 +368,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Patient logged in. A previous appointment on a specific future date has been cancelled. |
 | **Test Execution Steps** | 1. Send `POST /api/appointments` with the same date as the cancelled appointment using the same patient token. 2. Check the HTTP status and response body. |
 | **Expected Result** | 201 Created. New appointment has a queue number and status of pending. |
-| **Actual Result** | As expected. |
+| **Actual Result** | 201 Created. New appointment was returned with a new queue number and status of pending. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Backend — Node.js/Express, port 5001, SQLite |
@@ -385,7 +385,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Pre-conditions** | Frontend running on port 5173. Backend running on port 5001. Registered user exists. Browser opened at `/login`. |
 | **Test Execution Steps** | 1. Type the registered email into the email field. 2. Type the correct password into the password field. 3. Click Sign In. 4. Observe the URL. |
 | **Expected Result** | Browser redirects to `/` (dashboard). User is authenticated. |
-| **Actual Result** | As expected. |
+| **Actual Result** | Browser redirected to / (dashboard). Token and user details were stored in localStorage and the user was authenticated. |
 | **Status** | Pass |
 | **Bug ID** | — |
 | **Environment** | Frontend — React/Vite port 5173, Backend port 5001, Cypress with Chrome |
@@ -403,7 +403,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Test Execution Steps** | 1. Type the correct email into the email field. 2. Type an incorrect password. 3. Click Sign In. 4. Observe the page. |
 | **Expected Result** | Error message appears on the login page. URL remains `/login`. No page reload occurs. |
 | **Actual Result (before fix)** | Page silently reloaded with no error message. The Axios interceptor redirected to `/login` before React could set the error state. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 | **Bug ID** | BUG-007 |
 | **Environment** | Frontend — React/Vite port 5173, Backend port 5001, Cypress with Chrome |
 
@@ -420,7 +420,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Test Execution Steps** | 1. Navigate to `/appointments`. 2. Click Cancel on a pending appointment row. 3. Confirm the browser dialog. 4. Observe the appointments list. |
 | **Expected Result** | The appointment row remains visible with the status badge updated to "cancelled". The Edit and Cancel buttons disappear from that row. |
 | **Actual Result (before fix)** | The appointment row was removed entirely from the list. No cancelled status was shown and no record of the cancellation remained visible to the patient. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 | **Bug ID** | BUG-008 |
 | **Environment** | Frontend — React/Vite port 5173, Backend port 5001, Cypress with Chrome |
 
@@ -440,7 +440,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Steps to Reproduce** | 1. Send `DELETE /api/appointments/:id` with a valid patient Bearer token. 2. Note the HTTP response. 3. Send `DELETE /api/appointments/:id` again with the same ID. 4. Note the HTTP response. |
 | **Expected Result** | First DELETE returns 200 with cancellation message. Second DELETE returns 400 with "already cancelled". Appointment row remains in database with `status = 'cancelled'`. |
 | **Actual Result** | First DELETE permanently removed the row and returned 200. Second DELETE returned 404 "Appointment not found". |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 
 ---
 
@@ -454,7 +454,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Steps to Reproduce** | 1. Compute yesterday's date in YYYY-MM-DD format. 2. Send `POST /api/appointments` with the past date, a valid doctor, and a reason. 3. Note the HTTP response. |
 | **Expected Result** | 400 Bad Request with an error message indicating past dates are not allowed. |
 | **Actual Result** | 201 Created — appointment was booked with a past date without any error. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 
 ---
 
@@ -468,7 +468,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Steps to Reproduce** | 1. Send `POST /api/appointments` with a future date (first booking succeeds). 2. Send `POST /api/appointments` again with the exact same date and the same patient token. 3. Note the HTTP response of the second request. |
 | **Expected Result** | 409 Conflict with error message "You already have an appointment on this date". |
 | **Actual Result** | 201 Created — the duplicate appointment was booked without any error. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 
 ---
 
@@ -482,7 +482,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Steps to Reproduce** | 1. Send `POST /api/appointments` with `"date": "not-a-date"`, a valid doctor, and a reason. 2. Note the HTTP response. |
 | **Expected Result** | 400 Bad Request with an error message about the invalid date format. |
 | **Actual Result** | 201 Created — the invalid string was stored in the database as the appointment date. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 
 ---
 
@@ -524,7 +524,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Steps to Reproduce** | 1. Navigate to `/login`. 2. Enter the correct email and an incorrect password. 3. Click Sign In. 4. Observe the UI response. |
 | **Expected Result** | An error message appears on the login page. The URL remains `/login`. No page reload occurs. |
 | **Actual Result** | The page silently reloaded with no error message visible. The Axios interceptor caught the 401, cleared localStorage, and forced a redirect before React could set the error state. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 
 ---
 
@@ -538,7 +538,7 @@ I deliberately used API calls in Cypress before() hooks to set up state rather t
 | **Steps to Reproduce** | 1. Navigate to `/appointments`. 2. Click Cancel on a pending appointment row. 3. Confirm the browser dialog. 4. Observe the appointments list. |
 | **Expected Result** | The appointment row remains visible with the status badge updated to "cancelled". The Edit and Cancel buttons disappear from that row. |
 | **Actual Result** | The appointment row was removed entirely from the list. No cancelled status was shown and patients had no record of their cancelled appointments in the UI. |
-| **Status** | Fail — Fixed |
+| **Status** | Fixed |
 
 ---
 
