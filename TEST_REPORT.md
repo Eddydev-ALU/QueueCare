@@ -2,7 +2,7 @@
 
 ---
 
-## What You Built
+## What I Built
 
 QueueCare is a clinic queue management system with a React frontend (Vite, Tailwind, React Router, Axios) and a Node/Express backend using SQLite via better-sqlite3. The architecture is a simple REST API with JWT authentication. Users have three roles: patient, staff, and admin, enforced by middleware on every protected route. Appointments carry a queue number that auto-increments per date, and a status field that moves from pending to served or cancelled.
 
@@ -14,29 +14,29 @@ Key decisions: I kept the Postman collection self-contained, it registers its ow
 
 ---
 
-## What You Tested
+## What I Tested
 
 ### API Testing Coverage
 
-Comprehensive API coverage was completed across both appointment and authentication flows.
+I completed comprehensive API coverage across both appointment and authentication flows.
 
-Tested the full CRUD lifecycle for appointments:
+I tested the full CRUD lifecycle for appointments:
 - Create appointment
 - Read/fetch appointments
 - Update appointment
 - Cancel/delete appointment
 
-Verified role-based access control on all sensitive endpoints. Tested all defined error handling conditions. Covered 7 edge cases, including:
+I verified role-based access control on all sensitive endpoints, tested all defined error handling conditions, and covered 7 edge cases, including:
 - Date validation issues
 - Duplicate booking prevention and booking idempotency
 
 ### API Areas Skipped or Partially Covered
 
-Doctors endpoints were only partially tested:
-- Doctor creation was tested directly
+I only partially tested the Doctors endpoints:
+- I tested doctor creation directly
 - Listing and deletion were only used indirectly during setup, not as standalone happy-path tests
 
-The following queue archive endpoints were not tested:
+I did not test the following queue archive endpoints:
 - `/api/queue/dates`
 - `/api/queue/date/:date`
 
@@ -44,10 +44,10 @@ Reason for skipping:
 - These endpoints require past appointments to exist
 - Seeding this cleanly would require manipulating the system clock or directly inserting records into the database
 
-Concurrent requests were not tested, therefore:
+I did not test concurrent requests, therefore:
 - No automated validation exists for the race condition in queue number assignment
 
-JWT token expiry was not tested:
+I did not test JWT token expiry:
 - Token lifetime is 24 hours
 - No refresh-token flow exists
 - Testing expiry would require time mocking or waiting for expiration
@@ -70,7 +70,7 @@ JWT token expiry was not tested:
 
 ---
 
-## What You Automated
+## What I Automated
 
 Everything in the API section is automated via Newman. All 20 scenarios run headlessly in sequence with a single command.
 
