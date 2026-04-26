@@ -15,10 +15,25 @@ A clinic queue management system. Patients book appointments, staff manage the d
 
 ```
 QueueCare/
-├── backend/       Express API, SQLite database
-├── frontend/      React application (Vite)
+├── backend/               Express API, SQLite database
+├── frontend/              React application (Vite)
+├── screenshots/           Newman test run screenshots
 └── tests/
-    └── api/       Postman collection and Newman runner
+    ├── api/               Postman collection and Newman runner
+    │   ├── QueueCare.postman_collection.json
+    │   ├── QueueCare.postman_environment.json
+    │   └── package.json
+    ├── cypress/           Cypress UI test files
+    │   ├── e2e/
+    │   │   ├── auth/
+    │   │   │   └── login.cy.js
+    │   │   └── appointments/
+    │   │       ├── create-appointment.cy.js
+    │   │       └── manage-appointments.cy.js
+    │   ├── fixtures/
+    │   └── support/
+    ├── cypress.config.js
+    └── package.json
 ```
 
 ---
@@ -43,6 +58,13 @@ npm install
 
 ```bash
 cd tests/api
+npm install
+```
+
+### UI Tests (Cypress)
+
+```bash
+cd tests
 npm install
 ```
 
@@ -115,7 +137,7 @@ Requires both the backend (port 5001) and frontend (port 5173) servers to be run
 **Interactive mode (opens the Cypress UI):**
 
 ```bash
-cd frontend
+cd tests
 npm run cy:open
 ```
 
@@ -124,7 +146,7 @@ Select E2E Testing, then choose Chrome or Electron as the browser.
 **Headless mode (runs in the terminal, for CI):**
 
 ```bash
-cd frontend
+cd tests
 npm run cy:run
 ```
 

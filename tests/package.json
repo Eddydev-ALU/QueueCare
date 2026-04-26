@@ -1,0 +1,13 @@
+{
+  "name": "queuecare-ui-tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^15.14.1"
+  }
+}
