@@ -51,13 +51,14 @@ export default function Login() {
             </p>
 
             {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
+              <div data-testid="error-message" className="mt-4 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-3">
               <input
+                data-testid="email-input"
                 type="email"
                 required
                 value={form.email}
@@ -66,6 +67,7 @@ export default function Login() {
                 placeholder="Your email address"
               />
               <input
+                data-testid="password-input"
                 type="password"
                 required
                 value={form.password}
@@ -74,6 +76,7 @@ export default function Login() {
                 placeholder="Your password"
               />
               <button
+                data-testid="submit-btn"
                 type="submit"
                 disabled={loading}
                 className="w-full bg-charcoal hover:bg-sage-800 disabled:opacity-60 text-white font-medium py-4 rounded-full mt-2 transition-colors cursor-pointer"

@@ -1,0 +1,14 @@
+{
+  "patient": {
+    "name": "Cypress Patient",
+    "password": "Cypress@123"
+  },
+  "staff": {
+    "name": "Cypress Staff",
+    "password": "Cypress@123"
+  },
+  "admin": {
+    "name": "Cypress Admin",
+    "password": "Cypress@123"
+  }
+}

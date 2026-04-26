@@ -52,12 +52,13 @@ export default function EditAppointment() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>}
+        {error && <div data-testid="error-message" className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
             <select
+              data-testid="doctor-select"
               required
               value={form.doctor}
               onChange={(e) => setForm({ ...form, doctor: e.target.value })}
@@ -74,6 +75,7 @@ export default function EditAppointment() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Appointment Date</label>
             <input
+              data-testid="date-input"
               type="date"
               required
               value={form.date}
@@ -85,6 +87,7 @@ export default function EditAppointment() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
             <textarea
+              data-testid="reason-input"
               required
               rows={3}
               value={form.reason}
@@ -95,6 +98,7 @@ export default function EditAppointment() {
 
           <div className="flex gap-3 pt-2">
             <button
+              data-testid="submit-btn"
               type="submit"
               disabled={loading}
               className="flex-1 bg-charcoal hover:bg-sage-800 disabled:opacity-60 text-white font-medium py-2.5 rounded-lg transition-colors cursor-pointer"

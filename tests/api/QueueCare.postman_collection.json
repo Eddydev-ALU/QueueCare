@@ -1,0 +1,1169 @@
+{
+  "info": {
+    "name": "QueueCare API Tests",
+    "_postman_id": "queuecare-api-tests-v1",
+    "description": "Full API test suite — Happy Path, Negative Cases, Edge Cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const today = new Date();",
+          "const fmt = d => d.toISOString().split('T')[0];",
+          "const add = n => { const d = new Date(today); d.setDate(today.getDate() + n); return d; };",
+          "pm.environment.set('yesterday_date', fmt(add(-1)));",
+          "pm.environment.set('future_date_1', fmt(add(30)));",
+          "pm.environment.set('future_date_2', fmt(add(31)));",
+          "pm.environment.set('future_date_3', fmt(add(32)));",
+          "pm.environment.set('future_date_4', fmt(add(33)));",
+          "pm.environment.set('future_date_5', fmt(add(34)));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Setup",
+      "item": [
+        {
+          "name": "Init Test Variables",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.environment.set('ts', ts);",
+                  "pm.environment.set('patient_email', `patient_${ts}@test.com`);",
+                  "pm.environment.set('patient_password', 'Test@1234');",
+                  "pm.environment.set('patient2_email', `patient2_${ts}@test.com`);",
+                  "pm.environment.set('patient2_password', 'Test@1234');",
+                  "pm.environment.set('staff_email', `staff_${ts}@test.com`);",
+                  "pm.environment.set('staff_password', 'Test@1234');",
+                  "pm.environment.set('admin_email', `admin_${ts}@test.com`);",
+                  "pm.environment.set('admin_password', 'Test@1234');",
+                  "pm.environment.set('doctor_name', 'Dr. QC Tester');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Health check returns 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Register Patient",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Returns user object', () => {",
+                  "  const b = pm.response.json();",
+                  "  pm.expect(b).to.have.property('id');",
+                  "  pm.expect(b.role).to.eql('patient');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Test Patient\",\"email\":\"{{patient_email}}\",\"password\":\"{{patient_password}}\",\"role\":\"patient\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Patient 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('patient2_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Test Patient 2\",\"email\":\"{{patient2_email}}\",\"password\":\"{{patient2_password}}\",\"role\":\"patient\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Role is staff', () => pm.expect(pm.response.json().role).to.eql('staff'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Test Staff\",\"email\":\"{{staff_email}}\",\"password\":\"{{staff_password}}\",\"role\":\"staff\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Role is admin', () => pm.expect(pm.response.json().role).to.eql('admin'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Test Admin\",\"email\":\"{{admin_email}}\",\"password\":\"{{admin_password}}\",\"role\":\"admin\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Patient",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('Token returned', () => pm.expect(b).to.have.property('token'));",
+                  "pm.environment.set('patient_token', b.token);",
+                  "pm.environment.set('patient_id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{patient_email}}\",\"password\":\"{{patient_password}}\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Patient 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.environment.set('patient2_token', b.token);",
+                  "pm.environment.set('patient2_id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{patient2_email}}\",\"password\":\"{{patient2_password}}\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.environment.set('staff_token', b.token);",
+                  "pm.environment.set('staff_id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{staff_email}}\",\"password\":\"{{staff_password}}\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.environment.set('admin_token', b.token);",
+                  "pm.environment.set('admin_id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{admin_email}}\",\"password\":\"{{admin_password}}\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Admin Creates Test Doctor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Doctor created', () => {",
+                  "  const b = pm.response.json();",
+                  "  pm.expect(b.name).to.eql(pm.environment.get('doctor_name'));",
+                  "  pm.environment.set('doctor_id', b.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{admin_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"{{doctor_name}}\",\"specialty\":\"General Practice\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/doctors",
+              "host": ["{{base_url}}"],
+              "path": ["doctors"]
+            }
+          }
+        },
+        {
+          "name": "Patient 2 Books Appointment (for 403 test)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('patient2_appointment_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient2_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_2}}\",\"reason\":\"Patient 2 checkup\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Happy Path",
+      "item": [
+        {
+          "name": "HP1 — Register → Login → Valid Token Structure",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('Token is a non-empty string', () => {",
+                  "  pm.expect(b.token).to.be.a('string').and.to.have.length.above(20);",
+                  "});",
+                  "pm.test('User object has required fields', () => {",
+                  "  pm.expect(b.user).to.include.keys(['id', 'name', 'email', 'role']);",
+                  "});",
+                  "pm.test('Role is patient', () => pm.expect(b.user.role).to.eql('patient'));",
+                  "pm.test('Token has 3 JWT segments', () => {",
+                  "  pm.expect(b.token.split('.').length).to.eql(3);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{patient_email}}\",\"password\":\"{{patient_password}}\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "HP2 — Create Appointment → Queue Number Assigned",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const b = pm.response.json();",
+                  "pm.test('Queue number is a positive integer', () => {",
+                  "  pm.expect(b.queue_number).to.be.a('number').and.to.be.above(0);",
+                  "});",
+                  "pm.test('Status is pending', () => pm.expect(b.status).to.eql('pending'));",
+                  "pm.test('Doctor matches', () => pm.expect(b.doctor).to.eql(pm.environment.get('doctor_name')));",
+                  "pm.test('Date matches', () => pm.expect(b.date).to.eql(pm.environment.get('future_date_1')));",
+                  "pm.test('Patient name present', () => pm.expect(b.patient_name).to.be.a('string'));",
+                  "pm.environment.set('appointment_id', b.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_1}}\",\"reason\":\"Annual checkup\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "HP3a — Fetch All Appointments (Patient sees only own)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const rows = pm.response.json();",
+                  "pm.test('Returns an array', () => pm.expect(rows).to.be.an('array'));",
+                  "pm.test('All rows belong to this patient', () => {",
+                  "  const patientId = parseInt(pm.environment.get('patient_id'));",
+                  "  rows.forEach(r => pm.expect(r.patient_id).to.eql(patientId));",
+                  "});",
+                  "pm.test('Patient 2 appointment not visible', () => {",
+                  "  const ids = rows.map(r => r.id);",
+                  "  pm.expect(ids).to.not.include(parseInt(pm.environment.get('patient2_appointment_id')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "HP3b — Fetch All Appointments (Staff sees all)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const rows = pm.response.json();",
+                  "pm.test('Returns an array', () => pm.expect(rows).to.be.an('array'));",
+                  "pm.test('Includes both patients appointments', () => {",
+                  "  const ids = rows.map(r => r.id);",
+                  "  pm.expect(ids).to.include(parseInt(pm.environment.get('appointment_id')));",
+                  "  pm.expect(ids).to.include(parseInt(pm.environment.get('patient2_appointment_id')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{staff_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "HP4 — Fetch Single Appointment by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('ID matches', () => pm.expect(b.id).to.eql(parseInt(pm.environment.get('appointment_id'))));",
+                  "pm.test('Has all required fields', () => {",
+                  "  pm.expect(b).to.include.keys(['id','patient_id','doctor','date','reason','queue_number','status','patient_name','patient_email']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments/{{appointment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "{{appointment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "HP5 — Staff Marks Patient Served → Status Updates",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Success message returned', () => {",
+                  "  pm.expect(pm.response.json().message).to.include('served');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{staff_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/queue/{{appointment_id}}/serve",
+              "host": ["{{base_url}}"],
+              "path": ["queue", "{{appointment_id}}", "serve"]
+            }
+          }
+        },
+        {
+          "name": "HP5 verify — Confirm Status is Now Served",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Appointment status is served', () => {",
+                  "  pm.expect(pm.response.json().status).to.eql('served');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{staff_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments/{{appointment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "{{appointment_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Negative Cases",
+      "item": [
+        {
+          "name": "NC1 — Login with Wrong Password → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Error message present', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{patient_email}}\",\"password\":\"WRONG_PASSWORD\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "NC2 — Login with Non-Existent Email → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Error message present', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"ghost_nobody@notreal.com\",\"password\":\"Test@1234\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "NC3 — Create Appointment with Missing Fields → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Error message present', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{future_date_1}}\",\"reason\":\"Checkup\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "NC4 — Access Protected Endpoint with No Token → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Error message present', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "NC5 — Access Protected Endpoint with Invalid Token → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Error message present', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "this.is.not.a.valid.jwt", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "NC6 — Patient Accesses Another Patient's Appointment → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Forbidden error', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments/{{patient2_appointment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "{{patient2_appointment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "NC7 — Patient Tries to Mark Patient as Served → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Forbidden error', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/queue/{{patient2_appointment_id}}/serve",
+              "host": ["{{base_url}}"],
+              "path": ["queue", "{{patient2_appointment_id}}", "serve"]
+            }
+          }
+        },
+        {
+          "name": "NC8 — Fetch Non-Existent Appointment → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Not found error', () => pm.expect(pm.response.json()).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{staff_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments/99999999",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "99999999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Edge Cases",
+      "item": [
+        {
+          "name": "EC1 — Book Appointment in the Past → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Past date error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.include('past');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{yesterday_date}}\",\"reason\":\"Old appointment\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "EC2 Setup — Book on future_date_4 (for duplicate test)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('duplicate_test_appointment_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_4}}\",\"reason\":\"First booking\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "EC2 — Duplicate Booking Same Day → 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Duplicate booking error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.include('already have an appointment');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_4}}\",\"reason\":\"Second booking same day\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "EC3 — Invalid Date Format → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Date format error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.include('date');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"not-a-date\",\"reason\":\"Bad date\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "EC4 Setup — Book on future_date_3 (for reschedule test)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('reschedule_appointment_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_3}}\",\"reason\":\"To be rescheduled\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "EC4 — Reschedule to Past Date → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Past date error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.include('past');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{yesterday_date}}\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments/{{reschedule_appointment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "{{reschedule_appointment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "EC5 Setup — Book on future_date_5 (for cancel test)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.environment.set('cancel_appointment_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_5}}\",\"reason\":\"To be cancelled\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "EC5a — Cancel Appointment → 200",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Cancellation success message', () => {",
+                  "  pm.expect(pm.response.json().message).to.include('cancelled');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments/{{cancel_appointment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "{{cancel_appointment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "EC5b — Cancel Already-Cancelled → 400 (Graceful)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Already cancelled error', () => {",
+                  "  pm.expect(pm.response.json().error).to.include('already cancelled');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/appointments/{{cancel_appointment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "{{cancel_appointment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "EC6 — Mark Already-Served Appointment as Served Again → 400 (Graceful)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Already served error', () => {",
+                  "  pm.expect(pm.response.json().error).to.include('already marked as served');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{staff_token}}", "type": "string"}]},
+            "url": {
+              "raw": "{{base_url}}/queue/{{appointment_id}}/serve",
+              "host": ["{{base_url}}"],
+              "path": ["queue", "{{appointment_id}}", "serve"]
+            }
+          }
+        },
+        {
+          "name": "EC7 — Re-Book on Same Day After Cancellation → 201 (Allowed)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201 — re-booking allowed after cancellation', () => pm.response.to.have.status(201));",
+                  "pm.test('New queue number assigned', () => {",
+                  "  pm.expect(pm.response.json().queue_number).to.be.a('number').and.to.be.above(0);",
+                  "});",
+                  "pm.test('Status is pending', () => pm.expect(pm.response.json().status).to.eql('pending'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{patient_token}}", "type": "string"}]},
+            "body": {
+              "mode": "raw",
+              "raw": "{\"doctor\":\"{{doctor_name}}\",\"date\":\"{{future_date_5}}\",\"reason\":\"Re-booked after cancellation\"}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["appointments"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

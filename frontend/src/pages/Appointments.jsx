@@ -29,7 +29,7 @@ export default function Appointments() {
     if (!confirm('Cancel this appointment?')) return;
     try {
       await api.delete(`/appointments/${id}`);
-      setAppointments((prev) => prev.filter((a) => a.id !== id));
+      setAppointments((prev) => prev.map((a) => a.id === id ? { ...a, status: 'cancelled' } : a));
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to cancel appointment');
     }
@@ -44,6 +44,7 @@ export default function Appointments() {
           {user.role === 'patient' ? 'My Appointments' : 'All Appointments'}
         </h1>
         <Link
+          data-testid="new-appointment-btn"
           to="/appointments/new"
           className="bg-charcoal hover:bg-sage-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
@@ -62,7 +63,7 @@ export default function Appointments() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
+          <table data-testid="appointments-table" className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">#</th>
@@ -77,14 +78,14 @@ export default function Appointments() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {appointments.map((a, i) => (
-                <tr key={a.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={a.id} data-testid="appointment-row" data-appointment-id={a.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 text-gray-400">{i + 1}</td>
                   {user.role !== 'patient' && <td className="px-4 py-3 font-medium text-gray-900">{a.patient_name}</td>}
                   <td className="px-4 py-3 text-gray-700">{a.doctor}</td>
                   <td className="px-4 py-3 text-gray-700">{a.date}</td>
                   <td className="px-4 py-3 text-gray-500 max-w-xs truncate">{a.reason}</td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[a.status]}`}>
+                    <span data-testid="appointment-status" className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[a.status]}`}>
                       {a.status}
                     </span>
                   </td>
@@ -94,12 +95,14 @@ export default function Appointments() {
                       {a.status === 'pending' && (
                         <>
                           <button
+                            data-testid="edit-btn"
                             onClick={() => navigate(`/appointments/${a.id}/edit`)}
                             className="text-sage-600 hover:text-sage-800 text-xs font-medium cursor-pointer"
                           >
                             Edit
                           </button>
                           <button
+                            data-testid="cancel-btn"
                             onClick={() => handleDelete(a.id)}
                             className="text-red-500 hover:text-red-700 text-xs font-medium cursor-pointer"
                           >

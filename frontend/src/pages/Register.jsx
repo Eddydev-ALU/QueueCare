@@ -48,13 +48,14 @@ export default function Register() {
             </p>
 
             {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
+              <div data-testid="error-message" className="mt-4 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-3">
               <input
+                data-testid="name-input"
                 type="text"
                 required
                 value={form.name}
@@ -63,6 +64,7 @@ export default function Register() {
                 placeholder="Full name"
               />
               <input
+                data-testid="email-input"
                 type="email"
                 required
                 value={form.email}
@@ -71,6 +73,7 @@ export default function Register() {
                 placeholder="Your email address"
               />
               <input
+                data-testid="password-input"
                 type="password"
                 required
                 minLength={6}
@@ -80,6 +83,7 @@ export default function Register() {
                 placeholder="Password (min. 6 characters)"
               />
               <select
+                data-testid="role-select"
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
                 className="w-full bg-gray-100 rounded-xl px-4 py-4 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-sage-600 border-0"
@@ -89,6 +93,7 @@ export default function Register() {
                 <option value="admin">Admin</option>
               </select>
               <button
+                data-testid="submit-btn"
                 type="submit"
                 disabled={loading}
                 className="w-full bg-charcoal hover:bg-sage-800 disabled:opacity-60 text-white font-medium py-4 rounded-full mt-2 transition-colors cursor-pointer"
